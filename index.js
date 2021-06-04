@@ -1,12 +1,35 @@
-const connection = require('./connection');
+const connection = require("./connection");
 const express = require("express");
 const app = express();
 const PORT = 8080;
 
 const MongoClient = require("mongodb").MongoClient;
 
-MongoClient.connect(connection.CONNECTION_STRING, (err, client) => {
-    // ... do something here
+MongoClient.connect(connection, {
+    useUnifiedTopology: true,
+}).then((client) => {
+    console.log("Connected to Database");
+    const db = client.db("sushi-database");
+    const foodCollection = db.collection("food");
+
+    app.get("/getfood", (request, respons) => {
+        foodCollection
+            .find()
+            .toArray()
+            .then((results) => {
+                respons.send(results)
+            })
+            .catch((error) => console.error(error));
+    });
+
+    app.post("/addfood", (request, respons) => {
+        foodCollection
+            .insertOne(request.body)
+            .then(() => {
+                respons.send({ message: "Food Item Added" });
+            })
+            .catch((error) => console.error(error));
+    });
 });
 
 app.use(express.json());
