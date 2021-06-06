@@ -8,10 +8,8 @@
 # production
 /build
 
-#mongoDB login string
-connection.js
-
 # misc
+.env
 .DS_Store
 .env.local
 .env.development.local

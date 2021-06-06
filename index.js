@@ -1,60 +1,30 @@
-const connection = require("./connection");
 const express = require("express");
 const app = express();
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+//Define PORT for listening
 const PORT = 8080;
+//DB_CONNECTION
+require("dotenv/config");
 
-const MongoClient = require("mongodb").MongoClient;
+//Import routes
+const foodRoute = require("./routes/food");
 
-MongoClient.connect(connection, {
-    useUnifiedTopology: true,
-}).then((client) => {
-    console.log("Connected to Database");
-    const db = client.db("sushi-database");
-    const foodCollection = db.collection("food");
-
-    app.get("/getfood", (request, respons) => {
-        foodCollection
-            .find()
-            .toArray()
-            .then((results) => {
-                respons.send(results)
-            })
-            .catch((error) => console.error(error));
-    });
-
-    app.post("/addfood", (request, respons) => {
-        foodCollection
-            .insertOne(request.body)
-            .then(() => {
-                respons.send({ message: "Food Item Added" });
-            })
-            .catch((error) => console.error(error));
-    });
-});
-
+//Middleware setup for routes
+app.use("/food", foodRoute);
+//Middleware
 app.use(express.json());
 
-app.listen(PORT, () => console.log(`Listening to port: ${PORT}`));
-
-app.get("/test", (request, respons) => {
-    respons.status(200).send({
-        testdata: "Test",
-        status: true,
-    });
-});
-
-app.post("/data/:id", (request, respons) => {
-    //takes param as it is
-    const { id } = request.params;
-    //de-structures json and selects the key you want 'body'
-    //if no 'body' key is found, body variable will be undefined
-    const { body } = request.body;
-
-    if (!body) {
-        respons.status(418).send({ message: "No body!" });
+//Connect to DB
+mongoose.connect(
+    process.env.DB_CONNECTION,
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    },
+    () => {
+        console.log("Connected to MongoDB");
     }
+);
 
-    respons.send({
-        message: "Body is:" + body,
-    });
-});
+app.listen(PORT, () => console.log(`Listening to port: ${PORT}`));
