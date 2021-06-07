@@ -2,20 +2,23 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-//Define PORT for listening
+//define PORT for listening
 const PORT = 8080;
 //DB_CONNECTION
-require("dotenv/config");
+require("dotenv").config();
 
-//Import routes
+//import routes
 const foodRoute = require("./routes/food");
+const userRoute = require("./routes/user");
 
-//Middleware setup for routes
+//middleware setup for routes
 app.use("/food", foodRoute);
-//Middleware
+app.use("/user", userRoute);
+
+//middleware
 app.use(express.json());
 
-//Connect to DB
+//connect to DB
 mongoose.connect(
     process.env.DB_CONNECTION,
     { useNewUrlParser: true, useUnifiedTopology: true },

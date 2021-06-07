@@ -7,7 +7,7 @@ const FoodSchema = mongoose.Schema({
     },
     pieces: {
         type: Number,
-        required: false,
+        required: true,
     },
     description: {
         type: String,
