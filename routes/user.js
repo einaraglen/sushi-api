@@ -37,13 +37,34 @@ router.post("/add", async (request, response) => {
     }
 });
 
-router.get("/test", authenticateToken, (request, response) => {
+router.delete("/logout", async (request, response) => {
     try {
-        response.send({message: "ACCESS GRANTED"});
+        const currentRefreshToken = request.headers.cookie
+            .split(";")[1]
+            .replace("REFRESH_TOKEN=", "")
+            .trim();
+        await Token.findOneAndRemove({token: currentRefreshToken}, (error) => {
+            if (error) {
+                return response.send({
+                    status: false,
+                    message: "Could not remove Token",
+                });
+            }
+            return response.send({ status: true, message: "User Logged out, token removed" });
+        });
     } catch (error) {
         response.send({ status: false, error: error.message });
     }
-})
+});
+
+//auth test
+router.get("/test", authenticateToken, (request, response) => {
+    try {
+        response.send({ message: "ACCESS GRANTED" });
+    } catch (error) {
+        response.send({ status: false, error: error.message });
+    }
+});
 
 router.post("/refresh", async (request, response) => {
     try {
@@ -169,9 +190,9 @@ function authenticateToken(request, response, next) {
     const authenticationHeader = request.headers["authorization"];
     //auth header string = "BEARER <token>" so we collect the [1] string after split
     const token = request.headers.cookie
-    .split(";")[0]
-    .replace("ACCESS_TOKEN=", "")
-    .trim();
+        .split(";")[0]
+        .replace("ACCESS_TOKEN=", "")
+        .trim();
     if (!token) {
         return response.send({
             status: false,
@@ -189,6 +210,6 @@ function authenticateToken(request, response, next) {
         //move on from authentication middleware
         next();
     });
-};
+}
 
 module.exports = router;
