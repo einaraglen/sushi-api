@@ -4,13 +4,17 @@ const jwt = require("jsonwebtoken");
 const router = express.Router();
 const User = require("../models/User");
 const Token = require("../models/Token");
-const { response } = require("express");
+const cors = require("cors");
 
 //ACCESS_TOKEN_SECRET & REFRESH_TOKEN_SECRET
 require("dotenv").config();
 
-//for reading body of request
+//middleware
+router.use(cors({
+    origin: true
+}));
 router.use(express.json());
+
 
 router.post("/add", async (request, response) => {
     try {
@@ -58,15 +62,15 @@ router.delete("/logout", async (request, response) => {
 });
 
 //auth test
-router.get("/test", authenticateToken, (request, response) => {
+router.get("/validate", authenticateToken, (request, response) => {
     try {
-        response.send({ message: "ACCESS GRANTED" });
+        response.send({ status: true, message: "Valid Token" });
     } catch (error) {
         response.send({ status: false, error: error.message });
     }
 });
 
-router.post("/refresh", async (request, response) => {
+router.get("/refresh", async (request, response) => {
     try {
         const oldRefreshToken = request.headers.cookie
             .split(";")[1]
@@ -187,8 +191,13 @@ const generateAccessToken = (user) => {
 
 //middleware only works as es5 function not es6 () =>
 function authenticateToken(request, response, next) {
-    const authenticationHeader = request.headers["authorization"];
-    //auth header string = "BEARER <token>" so we collect the [1] string after split
+    if (!request.headers.cookie)  {
+        return response.send({
+            status: false,
+            message: "No cookie found in request",
+        });
+    }
+    //auth header string = "ACCESS_TOKEN=<token>" so we collect the [1] string after split
     const token = request.headers.cookie
         .split(";")[0]
         .replace("ACCESS_TOKEN=", "")

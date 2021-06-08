@@ -8,6 +8,7 @@ router.use(express.json());
 router.get("/all", async (request, response) => {
     try {
         const foods = await Food.find();
+        console.log(foods)
         response.send({ status: true, foods: foods });
     } catch (error) {
         response.send({ status: false, error: error.message });
