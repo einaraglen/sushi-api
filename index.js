@@ -9,10 +9,12 @@ require("dotenv").config();
 //import routes
 const foodRoute = require("./routes/food");
 const userRoute = require("./routes/user");
+const secretRoute = require("./routes/secret");
 
 //middleware setup for routes
 app.use("/food", foodRoute);
 app.use("/user", userRoute);
+app.use("/secret", secretRoute);
 
 //connect to DB
 mongoose.connect(

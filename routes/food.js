@@ -1,8 +1,13 @@
 const express = require("express");
+const cors = require("cors");
 const router = express.Router();
 const Food = require("../models/Food");
 
-//for reading body of request
+//middleware
+router.use(cors({
+    origin: true,
+    credentials: true,
+}));
 router.use(express.json());
 
 router.get("/all", async (request, response) => {

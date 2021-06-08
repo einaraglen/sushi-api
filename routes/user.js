@@ -11,13 +11,20 @@ require("dotenv").config();
 
 //middleware
 router.use(cors({
-    origin: true
+    origin: true,
+    credentials: true,
 }));
 router.use(express.json());
 
 
 router.post("/add", async (request, response) => {
     try {
+        if (!request.body.username || !request.body.password) {
+            return response.send({
+                status: false,
+                message: "Missing parameters",
+            });
+        }
         //encrypting password from body with .hash(password, salt-seed)
         const hashedPassword = await bcrypt.hash(request.body.password, 10);
 
@@ -122,10 +129,10 @@ router.get("/refresh", async (request, response) => {
 router.post("/login", async (request, response) => {
     try {
         //check if username field is sent
-        if (!request.body.username) {
+        if (!request.body.username || !request.body.password) {
             return response.send({
                 status: false,
-                message: "Username is null",
+                message: "Missing parameters",
             });
         }
 
@@ -142,6 +149,13 @@ router.post("/login", async (request, response) => {
                     return response.send({
                         status: false,
                         message: "Password is null",
+                    });
+                }
+
+                if (!user) {
+                    return response.send({
+                        status: false,
+                        message: "User does not exist",
                     });
                 }
 
