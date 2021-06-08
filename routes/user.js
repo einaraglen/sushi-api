@@ -166,6 +166,8 @@ router.post("/login", async (request, response) => {
                 );
                 if (result) {
                     const accessToken = generateAccessToken(user);
+                    //Remove all access tokens
+                    await Token.deleteMany();
                     const refresToken = new Token({
                         token: jwt.sign(
                             { user },
@@ -199,7 +201,7 @@ router.post("/login", async (request, response) => {
 
 const generateAccessToken = (user) => {
     return jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "10s",
+        expiresIn: "10m",
     });
 };
 
