@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const router = express.Router();
 const Food = require("../models/Food");
+const { authenticateToken } = require("./tools");
 
 //middleware
 router.use(cors({
@@ -13,7 +14,6 @@ router.use(express.json());
 router.get("/all", async (request, response) => {
     try {
         const foods = await Food.find();
-        console.log(foods)
         response.send({ status: true, foods: foods });
     } catch (error) {
         response.send({ status: false, error: error.message });
@@ -34,14 +34,15 @@ router.get("/find/:id", async (request, response) => {
     }
 });
 
-router.post("/add", async (request, response) => {
+router.post("/add", authenticateToken, async (request, response) => {
     try {
         const food = new Food({
+            number: request.body.number,
             name: request.body.name,
-            pieces: request.body.pieces,
-            description: request.body.description,
+            content: request.body.content,
             price: request.body.price,
             image: request.body.image,
+            type: request.body.type,
         });
 
         const savedFood = await food.save();
