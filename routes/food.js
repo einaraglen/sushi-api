@@ -5,16 +5,29 @@ const Food = require("../models/Food");
 const { authenticateToken } = require("./tools");
 
 //middleware
-router.use(cors({
-    origin: true,
-    credentials: true,
-}));
+router.use(
+    cors({
+        origin: true,
+        credentials: true,
+    })
+);
 router.use(express.json());
 
 router.get("/all", async (request, response) => {
     try {
         const foods = await Food.find();
         response.send({ status: true, foods: foods });
+    } catch (error) {
+        response.send({ status: false, error: error.message });
+    }
+});
+
+router.put("/update", async (request, response) => {
+    try {
+        let food = await Food.findOneAndUpdate({
+            _id: request.body.id,
+        }, request.body.update, { new: true });
+        response.send({ status: true, food: food });
     } catch (error) {
         response.send({ status: false, error: error.message });
     }
