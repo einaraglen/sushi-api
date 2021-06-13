@@ -26,10 +26,14 @@ router.get("/all", async (request, response) => {
 
 router.put("/update", authenticateToken, async (request, response) => {
     try {
-        let content = await Content.findOneAndUpdate({
-            _id: request.body.id,
-        }, request.body.update, { new: true });
-        response.send({ status: true, content: content});
+        let content = await Content.findOneAndUpdate(
+            {
+                _id: request.body.id,
+            },
+            request.body.update,
+            { new: true }
+        );
+        response.send({ status: true, content: content });
     } catch (error) {
         response.send({ status: false, error: error.message });
     }

@@ -15,18 +15,14 @@ const contentRoute = require("./routes/content");
 
 //middleware setup for routes
 app.use("/food", foodRoute);
-app.use("/user", userRoute);
+app.use("/user", userRoute);    
 app.use("/secret", secretRoute);
 app.use("/type", typeRoute);
 app.use("/content", contentRoute);
 
 //connect to DB
-mongoose.connect(
-    process.env.DB_CONNECTION,
-    { useNewUrlParser: true, useUnifiedTopology: true },
-    () => {
-        console.log("Connected to MongoDB");
-    }
-);
+mongoose.connect(process.env.DB_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true }, () => {
+    console.log("Connected to MongoDB");
+});
 
 app.listen(PORT, () => console.log(`Listening to port: ${PORT}`));
