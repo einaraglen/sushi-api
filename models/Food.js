@@ -24,14 +24,8 @@ const FoodSchema = mongoose.Schema({
         required: true,
     },
     type: {
-        name: {
-            type: String,
-            required: true,
-        },
-        pieces: {
-            type: Number,
-            required: true,
-        }
+        type: String,
+        required: true,
     }
 });
 

@@ -26,10 +26,11 @@ router.get("/all", async (request, response) => {
 
 router.put("/update", authenticateToken, async (request, response) => {
     try {
-        let type = await Type.findOneAndUpdate({
+        await Type.findOneAndUpdate({
             _id: request.body.id,
         }, request.body.update, { new: true });
-        response.send({ status: true, type: type});
+        let types = await Type.find();
+        response.send({ status: true, types: types});
     } catch (error) {
         response.send({ status: false, error: error.message });
     }

@@ -17,7 +17,6 @@ router.use(cors({
 }));
 router.use(express.json());
 
-
 router.post("/add", async (request, response) => {
     try {
         if (!request.body.username || !request.body.password) {
