@@ -19,7 +19,7 @@ router.get("/check/:id", async (request, response) => {
             secret: result ? "Correct secret" : "Incorrect secret",
         });
     } catch (error) {
-        response.send({ status: false, error: error.message });
+        response.send({ status: false, message: error.message });
     }
 });
 

@@ -44,7 +44,7 @@ router.post("/add", async (request, response) => {
             user: savedUser,
         });
     } catch (error) {
-        response.send({ status: false, error: error.message });
+        response.send({ status: false, message: error.message });
     }
 });
 
@@ -64,7 +64,7 @@ router.delete("/logout", async (request, response) => {
             return response.send({ status: true, message: "User Logged out, token removed" });
         });
     } catch (error) {
-        response.send({ status: false, error: error.message });
+        response.send({ status: false, message: error.message });
     }
 });
 
@@ -73,7 +73,7 @@ router.get("/validate", authenticateToken, (request, response) => {
     try {
         response.send({ status: true, message: "Valid Token" });
     } catch (error) {
-        response.send({ status: false, error: error.message });
+        response.send({ status: false, message: error.message });
     }
 });
 
@@ -122,7 +122,7 @@ router.get("/refresh", async (request, response) => {
             }
         );
     } catch (error) {
-        response.send({ status: false, error: error.message });
+        response.send({ status: false, message: error.message });
     }
 });
 
@@ -195,7 +195,7 @@ router.post("/login", async (request, response) => {
         );
     } catch (error) {
         //exception handeling with response
-        response.send({ status: false, error: error.message });
+        response.send({ status: false, message: error.message });
     }
 });
 

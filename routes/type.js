@@ -20,19 +20,33 @@ router.get("/all", async (request, response) => {
         const types = await Type.find();
         response.send({ status: true, types: types });
     } catch (error) {
-        response.send({ status: false, error: error.message });
+        response.send({ status: false, message: error.message });
     }
 });
 
 router.put("/update", authenticateToken, async (request, response) => {
     try {
-        await Type.findOneAndUpdate({
-            _id: request.body.id,
-        }, request.body.update, { new: true });
+        await Type.findOneAndUpdate(
+            {
+                _id: request.body.id,
+            },
+            request.body.update,
+            { new: true }
+        );
         let types = await Type.find();
-        response.send({ status: true, types: types});
+        response.send({ status: true, types: types });
     } catch (error) {
-        response.send({ status: false, error: error.message });
+        response.send({ status: false, message: error.message });
+    }
+});
+
+router.delete("/delete", authenticateToken, async (request, response) => {
+    try {
+        await Type.findByIdAndDelete({ _id: request.body.id });
+        let types = await Type.find();
+        response.send({ status: true, types: types });
+    } catch (error) {
+        response.send({ status: false, message: error.message });
     }
 });
 
@@ -46,21 +60,17 @@ router.get("/find/:id", async (request, response) => {
             results: byName,
         });
     } catch (error) {
-        response.send({ status: false, error: error.message });
+        response.send({ status: false, message: error.message });
     }
 });
 
 router.post("/add", authenticateToken, async (request, response) => {
     try {
-        const type = new Type({
-            name: request.body.name,
-            pieces: request.body.pieces,
-        });
-
-        const savedType = await type.save();
-        response.send({ status: true, added: savedType });
+        await new Type(request.body.type).save();
+        let types = await Type.find();
+        response.send({ status: true, types: types });
     } catch (error) {
-        response.send({ status: false, error: error.message });
+        response.send({ status: false, message: error.message });
     }
 });
 

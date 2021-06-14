@@ -21,19 +21,33 @@ router.get("/all", async (request, response) => {
         const foods = await Food.find();
         response.send({ status: true, foods: foods });
     } catch (error) {
-        response.send({ status: false, error: error.message });
+        response.send({ status: false, message: error.message });
     }
 });
 
 router.put("/update", authenticateToken, async (request, response) => {
     try {
-         await Food.findOneAndUpdate({
-            _id: request.body.id,
-        }, request.body.update, { new: true });
+        await Food.findOneAndUpdate(
+            {
+                _id: request.body.id,
+            },
+            request.body.update,
+            { new: true }
+        );
         const foods = await Food.find();
         response.send({ status: true, foods: foods });
     } catch (error) {
-        response.send({ status: false, error: error.message });
+        response.send({ status: false, message: error.message });
+    }
+});
+
+router.delete("/delete", authenticateToken, async (request, response) => {
+    try {
+        await Food.findByIdAndDelete({ _id: request.body.id });
+        const foods = await Food.find();
+        response.send({ status: true, foods: foods });
+    } catch (error) {
+        response.send({ status: false, message: error.message });
     }
 });
 
@@ -47,18 +61,17 @@ router.get("/find/:id", async (request, response) => {
             results: byName,
         });
     } catch (error) {
-        response.send({ status: false, error: error.message });
+        response.send({ status: false, message: error.message });
     }
 });
 
 router.post("/add", authenticateToken, async (request, response) => {
     try {
-        const food = new Food(request.body.food);
-
-        const savedFood = await food.save();
-        response.send({ status: true, added: savedFood });
+        await new Food(request.body.food).save();
+        let foods = await Food.find();
+        response.send({ status: true, foods: foods });
     } catch (error) {
-        response.send({ status: false, error: error.message });
+        response.send({ status: false, message: error.message });
     }
 });
 
