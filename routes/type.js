@@ -42,7 +42,7 @@ router.put("/update", authenticateToken, async (request, response) => {
 
 router.delete("/delete", authenticateToken, async (request, response) => {
     try {
-        await Type.findByIdAndDelete({ _id: request.body.id });
+        await Type.findByIdAndDelete(request.body.id);
         let types = await Type.find();
         response.send({ status: true, types: types });
     } catch (error) {

@@ -43,7 +43,7 @@ router.put("/update", authenticateToken, async (request, response) => {
 
 router.delete("/delete", authenticateToken, async (request, response) => {
     try {
-        await Food.findByIdAndDelete({ _id: request.body.id });
+        await Food.findByIdAndDelete(request.body.id);
         const foods = await Food.find();
         response.send({ status: true, foods: foods });
     } catch (error) {

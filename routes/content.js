@@ -26,16 +26,27 @@ router.get("/all", async (request, response) => {
 
 router.put("/update", authenticateToken, async (request, response) => {
     try {
-        let content = await Content.findOneAndUpdate(
+        await Content.findOneAndUpdate(
             {
                 _id: request.body.id,
             },
             request.body.update,
             { new: true }
         );
-        response.send({ status: true, content: content });
+        const contents = await Content.find();
+        response.send({ status: true, contents: contents });
     } catch (error) {
         response.send({ status: false, error: error.message });
+    }
+});
+
+router.delete("/delete", authenticateToken, async (request, response) => {
+    try {
+        await Content.findByIdAndDelete(request.body.id);
+        const contents = await Content.find();
+        response.send({ status: true, contents: contents });
+    } catch (error) {
+        response.send({ status: false, message: error.message });
     }
 });
 
@@ -55,12 +66,9 @@ router.get("/find/:id", async (request, response) => {
 
 router.post("/add", authenticateToken, async (request, response) => {
     try {
-        const content = new Content({
-            name: request.body.name,
-        });
-
-        const savedContent = await content.save();
-        response.send({ status: true, added: savedContent });
+        await new Content(request.body.content).save();
+        const contents = await Content.find();
+        response.send({ status: true, contents: contents });
     } catch (error) {
         response.send({ status: false, error: error.message });
     }
