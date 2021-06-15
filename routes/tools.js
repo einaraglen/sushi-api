@@ -24,7 +24,7 @@ function authenticateToken(request, response, next) {
     //vertifying token
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (error, user) => {
         if (error) {
-            return response.send({ status: false, error: error });
+            return response.send({ status: false, message: `${error.name} ${error.message}` });
         }
         //set verified user
         require.user = user;
