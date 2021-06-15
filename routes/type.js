@@ -34,7 +34,7 @@ router.put("/update", authenticateToken, async (request, response) => {
             { new: true }
         );
         let types = await Type.find();
-        response.send({ status: true, types: types });
+        response.send({ status: true, types: types, message: "Type updated" });
     } catch (error) {
         response.send({ status: false, message: error.message });
     }
@@ -44,7 +44,7 @@ router.delete("/delete", authenticateToken, async (request, response) => {
     try {
         await Type.findByIdAndDelete(request.body.id);
         let types = await Type.find();
-        response.send({ status: true, types: types });
+        response.send({ status: true, types: types, message: "Type deleted" });
     } catch (error) {
         response.send({ status: false, message: error.message });
     }
@@ -68,7 +68,7 @@ router.post("/add", authenticateToken, async (request, response) => {
     try {
         await new Type(request.body.type).save();
         let types = await Type.find();
-        response.send({ status: true, types: types });
+        response.send({ status: true, types: types, message: "Type added" });
     } catch (error) {
         response.send({ status: false, message: error.message });
     }

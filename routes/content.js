@@ -34,7 +34,7 @@ router.put("/update", authenticateToken, async (request, response) => {
             { new: true }
         );
         const contents = await Content.find();
-        response.send({ status: true, contents: contents });
+        response.send({ status: true, contents: contents, message: "Content updated" });
     } catch (error) {
         response.send({ status: false, error: error.message });
     }
@@ -44,7 +44,7 @@ router.delete("/delete", authenticateToken, async (request, response) => {
     try {
         await Content.findByIdAndDelete(request.body.id);
         const contents = await Content.find();
-        response.send({ status: true, contents: contents });
+        response.send({ status: true, contents: contents, message: "Content deleted" });
     } catch (error) {
         response.send({ status: false, message: error.message });
     }
@@ -68,7 +68,7 @@ router.post("/add", authenticateToken, async (request, response) => {
     try {
         await new Content(request.body.content).save();
         const contents = await Content.find();
-        response.send({ status: true, contents: contents });
+        response.send({ status: true, contents: contents, message: "Content added" });
     } catch (error) {
         response.send({ status: false, error: error.message });
     }
