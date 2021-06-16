@@ -12,7 +12,7 @@ const FoodSchema = mongoose.Schema({
         required: true,
     },
     content: {
-        type: [String],
+        type: [mongoose.Schema.Types.ObjectId],
         required: true,
     },
     price: {
@@ -24,7 +24,7 @@ const FoodSchema = mongoose.Schema({
         required: true,
     },
     type: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
     }
 });

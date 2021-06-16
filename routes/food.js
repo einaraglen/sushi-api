@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const router = express.Router();
 const Food = require("../models/Food");
+const Content = require("../models/Content");
 const { authenticateToken } = require("./tools");
 
 //middleware
@@ -20,6 +21,16 @@ router.get("/all", async (request, response) => {
         //await new Promise(resolve => setTimeout(resolve, 2000));
         const foods = await Food.find();
         response.send({ status: true, foods: foods });
+    } catch (error) {
+        response.send({ status: false, message: error.message });
+    }
+});
+
+router.get("/all-complete", async (request, response) => {
+    try {
+        const food = await Food.find({ name: "Laks Maki"});
+        const contents = await Content.find({_id: {"$in": food[0]["content"]}})
+        response.send({content: contents})
     } catch (error) {
         response.send({ status: false, message: error.message });
     }
