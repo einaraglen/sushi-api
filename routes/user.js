@@ -4,17 +4,19 @@ const jwt = require("jsonwebtoken");
 const router = express.Router();
 const User = require("../models/User");
 const Token = require("../models/Token");
-const { authenticateToken } = require("./tools");
+const { authenticateToken, getCookie } = require("./tools");
 const cors = require("cors");
 
 //ACCESS_TOKEN_SECRET & REFRESH_TOKEN_SECRET
 require("dotenv").config();
 
 //middleware
-router.use(cors({
-    origin: true,
-    credentials: true,
-}));
+router.use(
+    cors({
+        origin: true,
+        credentials: true,
+    })
+);
 router.use(express.json());
 
 router.post("/add", async (request, response) => {
@@ -50,10 +52,7 @@ router.post("/add", async (request, response) => {
 
 router.delete("/logout", async (request, response) => {
     try {
-        const currentRefreshToken = request.headers.cookie
-            .split(";")[1]
-            .replace("REFRESH_TOKEN=", "")
-            .trim();
+        const currentRefreshToken = getCookie(request, "REFRESH_TOKEN");
         await Token.findOneAndRemove({token: currentRefreshToken}, (error) => {
             if (error) {
                 return response.send({
@@ -79,10 +78,7 @@ router.get("/validate", authenticateToken, (request, response) => {
 
 router.get("/refresh", async (request, response) => {
     try {
-        const oldRefreshToken = request.headers.cookie
-            .split(";")[1]
-            .replace("REFRESH_TOKEN=", "")
-            .trim();
+        const oldRefreshToken = getCookie(request, "REFRESH_TOKEN");
         //check if token is in request
         if (!oldRefreshToken) {
             return response.send({
@@ -201,7 +197,7 @@ router.post("/login", async (request, response) => {
 
 const generateAccessToken = (user) => {
     return jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "10m",
+        expiresIn: "10s",
     });
 };
 
