@@ -52,16 +52,9 @@ router.post("/add", async (request, response) => {
 
 router.delete("/logout", async (request, response) => {
     try {
-        const currentRefreshToken = getCookie(request, "REFRESH_TOKEN");
-        await Token.findOneAndRemove({token: currentRefreshToken}, (error) => {
-            if (error) {
-                return response.send({
-                    status: false,
-                    message: "Could not remove Token",
-                });
-            }
-            return response.send({ status: true, message: "User Logged out, token removed" });
-        });
+        //Remove all access tokens
+        await Token.deleteMany();
+        response.send({ status: true, message: "User Logged out, token removed" });
     } catch (error) {
         response.send({ status: false, message: error.message });
     }
@@ -197,7 +190,7 @@ router.post("/login", async (request, response) => {
 
 const generateAccessToken = (user) => {
     return jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET, {
-        //expiresIn: "10s", || for testing tokens
+        //expiresIn: "10s",
         expiresIn: "10m",
     });
 };
