@@ -25,4 +25,4 @@ mongoose.connect(process.env.DB_CONNECTION, { useNewUrlParser: true, useUnifiedT
     console.log("Connected to MongoDB");
 });
 
-app.listen(PORT, () => console.log(`Listening to port: ${PORT}`));
+app.listen(process.env.PORT || PORT, () => console.log(`Listening to port: ${PORT}`));
