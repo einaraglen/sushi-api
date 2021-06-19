@@ -6,6 +6,7 @@ const User = require("../models/User");
 const Token = require("../models/Token");
 const { authenticateToken, getCookie } = require("./tools");
 const cors = require("cors");
+const session = require('express-session')
 
 //ACCESS_TOKEN_SECRET & REFRESH_TOKEN_SECRET
 require("dotenv").config();
@@ -18,6 +19,15 @@ router.use(
     })
 );
 router.use(express.json());
+router.use(
+    session({
+        proxy: true,
+        secret: "test",
+        cookie: {
+            secure: true,
+        },
+    })
+);
 
 router.post("/add", async (request, response) => {
     try {
@@ -54,7 +64,10 @@ router.delete("/logout", async (request, response) => {
     try {
         //Remove all access tokens
         await Token.deleteMany();
-        response.send({ status: true, message: "User Logged out, token removed" });
+        response.send({
+            status: true,
+            message: "User Logged out, token removed",
+        });
     } catch (error) {
         response.send({ status: false, message: error.message });
     }
@@ -173,7 +186,11 @@ router.post("/login", async (request, response) => {
 
                     return response
                         .cookie("ACCESS_TOKEN", accessToken, COOKIE_CONFIG)
-                        .cookie("REFRESH_TOKEN", savedToken.token, COOKIE_CONFIG)
+                        .cookie(
+                            "REFRESH_TOKEN",
+                            savedToken.token,
+                            COOKIE_CONFIG
+                        )
                         .send({
                             status: true,
                             message: "Login Complete",
