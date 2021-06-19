@@ -181,11 +181,10 @@ router.post("/login", async (request, response) => {
                     const savedToken = await refresToken.save();
 
                     return response
-                        .cookie("ACCESS_TOKEN", accessToken, COOKIE_CONFIG)
+                        .cookie("ACCESS_TOKEN", accessToken)
                         .cookie(
                             "REFRESH_TOKEN",
-                            savedToken.token,
-                            COOKIE_CONFIG
+                            savedToken.token
                         )
                         .send({
                             status: true,
