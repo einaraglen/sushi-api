@@ -69,7 +69,7 @@ router.delete("/logout", async (request, response) => {
         await Token.deleteMany();
         response
             .cookie("ACCESS_TOKEN", "", {...COOKIE_CONFIG, expires: new Date(0) })
-            .cookie("REFRESH", "", {...COOKIE_CONFIG, expires: new Date(0) })
+            .cookie("REFRESH_TOKEN", "", {...COOKIE_CONFIG, expires: new Date(0) })
             .send({
                 status: true,
                 message: "User Logged out, token removed",
@@ -216,7 +216,7 @@ router.post("/login", async (request, response) => {
 const generateAccessToken = (user) => {
     return jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET, {
         //expiresIn: "10s",
-        expiresIn: "10m",
+        expiresIn: "1m",
     });
 };
 
