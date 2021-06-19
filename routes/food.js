@@ -8,7 +8,7 @@ const { authenticateToken } = require("./tools");
 //middleware
 router.use(
     cors({
-        origin: true,
+        origin: "https://clever-poincare-754fdc.netlify.app/",
         credentials: true,
         useFindAndModify: false,
     })
