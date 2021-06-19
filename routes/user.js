@@ -14,8 +14,9 @@ require("dotenv").config();
 //middleware
 router.use(
     cors({
-        origin: true,
+        origin: ["https://sushi-panel.netlify.app/", "http://localhost:3000/"],
         credentials: true,
+        useFindAndModify: false,
     })
 );
 router.use(express.json());
