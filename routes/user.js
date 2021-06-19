@@ -19,16 +19,17 @@ router.use(
     })
 );
 router.use(express.json());
-router.use(
+/*router.use(
     session({
         proxy: true,
-        secret: "test",
-        cookie: {
-            sameSite: "none",
-            secure: true,
-        },
+        
     })
-);
+);*/
+
+const COOKIE_CONFIG = {
+    secure: true,
+    sameSite: "none",
+}
 
 router.post("/add", async (request, response) => {
     try {
@@ -118,7 +119,7 @@ router.get("/refresh", async (request, response) => {
                 });
 
                 //set new access token cookie
-                return response.cookie("ACCESS_TOKEN", accessToken).send({
+                return response.cookie("ACCESS_TOKEN", accessToken, COOKIE_CONFIG).send({
                     status: true,
                     message: "Refresh complete",
                 });
@@ -181,10 +182,11 @@ router.post("/login", async (request, response) => {
                     const savedToken = await refresToken.save();
 
                     return response
-                        .cookie("ACCESS_TOKEN", accessToken)
+                        .cookie("ACCESS_TOKEN", accessToken, COOKIE_CONFIG)
                         .cookie(
                             "REFRESH_TOKEN",
-                            savedToken.token
+                            savedToken.token,
+                            COOKIE_CONFIG
                         )
                         .send({
                             status: true,
