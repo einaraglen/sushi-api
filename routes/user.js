@@ -24,6 +24,7 @@ router.use(
         proxy: true,
         secret: "test",
         cookie: {
+            sameSite: "none",
             secure: true,
         },
     })
