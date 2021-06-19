@@ -24,8 +24,8 @@ const authenticateToken = (request, response, next) => {
 const getCookie = (request, key) => {
     //yeet if null
     if (!request.headers.cookie) return null;
-    //string magic to get [cookie(1), cookie(2) ... cookie(n)]
-    let cookies = request.headers.cookie.replaceAll(" ", "").split(";");
+    //string magic to get [cookie(1), cookie(2) ... cookie(n)] // including the 'g' in replace makes the search global
+    let cookies = request.headers.cookie.replace(/ /g, "").split(";");
     //iterate through, if match with key, return pure token value
     for (let i = 0; i < cookies.length; i++) {
         if (cookies[i].indexOf(key) > -1) return cookies[i].replace(`${key}=`, ``);
