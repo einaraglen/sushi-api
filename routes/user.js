@@ -28,7 +28,7 @@ router.use(express.json());
 );*/
 
 const COOKIE_CONFIG = {
-    //secure: true,
+    secure: true,
     sameSite: "none",
 };
 
@@ -104,7 +104,7 @@ router.get("/refresh", async (request, response) => {
         if (!token) {
             return response.send({
                 status: false,
-                message: "Token not found, access denied",
+                message: "Token not found, access denied : " + oldRefreshToken,
             });
         }
 
