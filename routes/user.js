@@ -6,7 +6,7 @@ const User = require("../models/User");
 const Token = require("../models/Token");
 const { authenticateToken, getCookie } = require("./tools");
 const cors = require("cors");
-const session = require('express-session')
+const session = require("express-session");
 
 //ACCESS_TOKEN_SECRET & REFRESH_TOKEN_SECRET
 require("dotenv").config();
@@ -29,7 +29,7 @@ router.use(express.json());
 const COOKIE_CONFIG = {
     secure: true,
     sameSite: "none",
-}
+};
 
 router.post("/add", async (request, response) => {
     try {
@@ -66,10 +66,13 @@ router.delete("/logout", async (request, response) => {
     try {
         //Remove all access tokens
         await Token.deleteMany();
-        response.send({
-            status: true,
-            message: "User Logged out, token removed",
-        });
+        response
+            .cookie("ACCESS_TOKEN", "", {...COOKIE_CONFIG, expires: new Date(0) })
+            .cookie("REFRESH", "", {...COOKIE_CONFIG, expires: new Date(0) })
+            .send({
+                status: true,
+                message: "User Logged out, token removed",
+            });
     } catch (error) {
         response.send({ status: false, message: error.message });
     }
@@ -119,10 +122,12 @@ router.get("/refresh", async (request, response) => {
                 });
 
                 //set new access token cookie
-                return response.cookie("ACCESS_TOKEN", accessToken, COOKIE_CONFIG).send({
-                    status: true,
-                    message: "Refresh complete",
-                });
+                return response
+                    .cookie("ACCESS_TOKEN", accessToken, COOKIE_CONFIG)
+                    .send({
+                        status: true,
+                        message: "Refresh complete",
+                    });
             }
         );
     } catch (error) {
