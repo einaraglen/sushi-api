@@ -20,8 +20,24 @@ app.use("/secret", secretRoute);
 app.use("/type", typeRoute);
 app.use("/content", contentRoute);
 
+const mongooseOptions = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    server: { 
+        socketOptions: { 
+          keepAlive: 300000, connectTimeoutMS: 30000 
+        } 
+      }, 
+      replset: { 
+        socketOptions: { 
+          keepAlive: 300000, 
+          connectTimeoutMS : 30000 
+        } 
+      } 
+}
+
 //connect to DB
-mongoose.connect(process.env.DB_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true }, () => {
+mongoose.connect(process.env.DB_CONNECTION, mongooseOptions, () => {
     console.log("Connected to MongoDB");
 });
 
