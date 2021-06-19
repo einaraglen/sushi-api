@@ -166,9 +166,14 @@ router.post("/login", async (request, response) => {
                     //save refreshToken for later refresh
                     const savedToken = await refresToken.save();
 
+                    const COOKIE_CONFIG = {
+                        sameSite: true,
+                        secure: true,
+                    };
+
                     return response
-                        .cookie("ACCESS_TOKEN", accessToken)
-                        .cookie("REFRESH_TOKEN", savedToken.token)
+                        .cookie("ACCESS_TOKEN", accessToken, COOKIE_CONFIG)
+                        .cookie("REFRESH_TOKEN", savedToken.token, COOKIE_CONFIG)
                         .send({
                             status: true,
                             message: "Login Complete",
