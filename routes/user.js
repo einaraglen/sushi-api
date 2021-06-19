@@ -30,6 +30,7 @@ router.use(express.json());
 const COOKIE_CONFIG = {
     secure: true,
     sameSite: "none",
+    httpOnly: true,
 };
 
 router.post("/add", async (request, response) => {
@@ -91,6 +92,7 @@ router.get("/validate", authenticateToken, (request, response) => {
 router.get("/refresh", async (request, response) => {
     try {
         const oldRefreshToken = getCookie(request, "REFRESH_TOKEN");
+        console.log(oldRefreshToken)
         //check if token is in request
         if (!oldRefreshToken) {
             return response.send({
