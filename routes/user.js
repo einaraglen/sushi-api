@@ -28,9 +28,8 @@ router.use(express.json());
 );*/
 
 const COOKIE_CONFIG = {
-    secure: true,
+    //secure: true,
     sameSite: "none",
-    httpOnly: true,
 };
 
 router.post("/add", async (request, response) => {
