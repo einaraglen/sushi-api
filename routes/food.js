@@ -8,7 +8,7 @@ const { authenticateToken } = require("./tools");
 //middleware
 router.use(
     cors({
-        origin: ["https://sushi-panel.netlify.app/", "http://localhost:3000/"],
+        origin: true,
         credentials: true,
         useFindAndModify: false,
     })
