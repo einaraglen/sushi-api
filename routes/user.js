@@ -91,7 +91,6 @@ router.get("/validate", authenticateToken, (request, response) => {
 router.get("/refresh", async (request, response) => {
     try {
         const oldRefreshToken = getCookie(request, "REFRESH_TOKEN");
-        console.log(oldRefreshToken)
         //check if token is in request
         if (!oldRefreshToken) {
             return response.send({
@@ -104,7 +103,7 @@ router.get("/refresh", async (request, response) => {
         if (!token) {
             return response.send({
                 status: false,
-                message: "Token not found, access denied : " + oldRefreshToken,
+                message: "Token not found, access denied",
             });
         }
 
