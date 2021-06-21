@@ -29,6 +29,22 @@ router.get("/all", authenticateToken, async (request, response) => {
     }
 });
 
+router.put("/update", authenticateToken, async (request, response) => {
+    try {
+        await Order.findOneAndUpdate(
+            {
+                _id: request.body.id,
+            },
+            request.body.update,
+            { new: true }
+        );
+        const orders = await Order.find();
+        response.send({ status: true, orders: orders, message: "Order updated" });
+    } catch (error) {
+        response.send({ status: false, message: error.message });
+    }
+});
+
 router.post("/add", authenticateToken, async (request, response) => {
     try {
         //fancy lil uid that is given to a order as a recognition token per say
