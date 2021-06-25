@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const router = express.Router();
 const Food = require("../models/Food");
-const Content = require("../models/Content");
+const Order = require("../models/Order");
 const { authenticateToken } = require("./tools");
 
 //middleware
@@ -54,6 +54,8 @@ router.put("/update", authenticateToken, async (request, response) => {
 
 router.delete("/delete", authenticateToken, async (request, response) => {
     try {
+        //clean out to be deleted food from all orders containing it
+        await Order.updateMany({ food: request.body.id}, { "$pull": { "food": request.body.id }}, { safe: true, multi:true });
         await Food.findByIdAndDelete(request.body.id);
         const foods = await Food.find();
         response.send({ status: true, foods: foods, message: "Food deleted" });

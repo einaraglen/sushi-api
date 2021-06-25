@@ -2,7 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const router = express.Router();
 const Content = require("../models/Content");
+const Food = require("../models/Food");
 const { authenticateToken } = require("./tools");
+const { find, remove } = require("../models/Food");
 
 //middleware
 router.use(
@@ -43,6 +45,8 @@ router.put("/update", authenticateToken, async (request, response) => {
 
 router.delete("/delete", authenticateToken, async (request, response) => {
     try {
+        //find all foods with this content and remove content from food
+        await Food.updateMany({ content: request.body.id}, { "$pull": { "content": request.body.id }}, { safe: true, multi:true });
         await Content.findByIdAndDelete(request.body.id);
         const contents = await Content.find();
         response.send({ status: true, contents: contents, message: "Content deleted" });
@@ -50,6 +54,15 @@ router.delete("/delete", authenticateToken, async (request, response) => {
         response.send({ status: false, message: error.message });
     }
 });
+
+const removeInstanceOf = (object, list) => {
+    console.log(list)
+    const index = list.indexOf(object);
+    if (index > -1) {
+        list.splice(index, 1);
+    }
+    return list;
+}
 
 router.get("/find/:id", async (request, response) => {
     try {

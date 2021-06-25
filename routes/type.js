@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const router = express.Router();
 const Type = require("../models/Type");
+const Food = require("../models/Food");
 const { authenticateToken } = require("./tools");
 
 //middleware
@@ -43,6 +44,8 @@ router.put("/update", authenticateToken, async (request, response) => {
 
 router.delete("/delete", authenticateToken, async (request, response) => {
     try {
+        //remove type from all foods with this type
+        await Food.updateMany({ type: request.body.id}, {type: undefined}, { safe: true, multi:true });
         await Type.findByIdAndDelete(request.body.id);
         let types = await Type.find();
         response.send({ status: true, types: types, message: "Type deleted" });
