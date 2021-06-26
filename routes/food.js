@@ -52,6 +52,7 @@ router.put("/update", authenticateToken, async (request, response) => {
     }
 });
 
+//rnd comment
 router.delete("/delete", authenticateToken, async (request, response) => {
     try {
         //clean out to be deleted food from all orders containing it
