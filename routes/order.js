@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const router = express.Router();
 const Order = require("../models/Order");
+const Archive = require("../models/Archive");
 const { authenticateToken } = require("./tools");
 const ShortUniqueId = require('short-unique-id');
 
@@ -29,6 +30,16 @@ router.get("/all", authenticateToken, async (request, response) => {
     }
 });
 
+router.get("/archives", authenticateToken, async (request, response) => {
+    try {
+        const archives = await Archive.find();
+        response.send({ status: true, archives: archives });
+    } catch (error) {
+        response.send({ status: false, message: error.message });
+    }
+});
+
+
 router.put("/update", authenticateToken, async (request, response) => {
     try {
         await Order.findOneAndUpdate(
@@ -38,8 +49,18 @@ router.put("/update", authenticateToken, async (request, response) => {
             request.body.update,
             { new: true }
         );
+        if (!request.body.update.done) {
+            const order = await Order.findOne({ _id: request.body.id });
+            await new Archive({
+                shortid: order.shortid,
+                food: order.food,
+                price: order.price,
+                created: order.created,
+            }).save();
+            await Order.findByIdAndDelete(request.body.id);
+        }
         const orders = await Order.find();
-        response.send({ status: true, orders: orders, message: "Order updated" });
+        response.send({ status: true, orders: orders, message: !request.body.update.done ? "Order Archived" : "Order updated" });
     } catch (error) {
         response.send({ status: false, message: error.message });
     }

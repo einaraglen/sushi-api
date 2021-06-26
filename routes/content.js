@@ -55,15 +55,6 @@ router.delete("/delete", authenticateToken, async (request, response) => {
     }
 });
 
-const removeInstanceOf = (object, list) => {
-    console.log(list)
-    const index = list.indexOf(object);
-    if (index > -1) {
-        list.splice(index, 1);
-    }
-    return list;
-}
-
 router.get("/find/:id", async (request, response) => {
     try {
         const regex = new RegExp(request.params.id, "i"); // i for case insensitive
