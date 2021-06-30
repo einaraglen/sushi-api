@@ -13,6 +13,7 @@ const secretRoute = require("./routes/secret");
 const typeRoute = require("./routes/type");
 const contentRoute = require("./routes/content");
 const orderRoute = require("./routes/order");
+const imageRoute = require("./routes/image");
 
 //middleware setup for routes
 app.use("/food", foodRoute);
@@ -21,8 +22,9 @@ app.use("/secret", secretRoute);
 app.use("/type", typeRoute);
 app.use("/content", contentRoute);
 app.use("/order", orderRoute);
+app.use("/image", imageRoute);
 
-const mongooseOptions = {
+const mongooseOptions = { 
     useNewUrlParser: true,
     useUnifiedTopology: true,
     server: { 
