@@ -20,6 +20,7 @@ router.use(
 );
 router.use(express.json());
 
+//this is our connection to the image api, read from .env locally on heroku server
 cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
     api_key: process.env.API_KEY,
