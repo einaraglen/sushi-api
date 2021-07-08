@@ -35,7 +35,7 @@ const getAllImages = () => {
             .then((result) => result);
 }
 
-router.put("/destroy", async (request, response) => {
+router.put("/destroy", authenticateToken, async (request, response) => {
     try {
         //error handling
         if (!request.body.public_id)
