@@ -27,25 +27,43 @@ cloudinary.config({
     api_secret: process.env.API_SECRET,
 });
 
-/*router.post("/update", async (request, response) => {
-    try {
-        let res = await cloudinary.api.update("uf244gwnizoh97vg07fr", {
-            filename: "test"
-        });
-        response.send({ status: true, res: res });
-    } catch (error) {
-        response.send({ status: false, message: error });
-    }
-});*/
-
-router.get("/all", authenticateToken, async (request, response) => {
-    try {
-        let res = await cloudinary.search
+const getAllImages = () => {
+    return cloudinary.search
             .expression("resource_type:image")
             .sort_by("public_id", "desc")
             .execute()
             .then((result) => result);
-        response.send({ status: true, images: res.resources });
+}
+
+router.put("/destroy", async (request, response) => {
+    try {
+        //error handling
+        if (!request.body.public_id)
+            return response.send({
+                status: false,
+                message: "Please provide 'public_id'",
+            });
+        //time to remove, if not valid pub_id, error will be thrown
+        await cloudinary.uploader.destroy(
+            request.body.public_id,
+            (result) => result
+        );
+        let images = await getAllImages();
+        //let user know how it went
+        response.send({
+            status: true,
+            images: images.resources,
+            message: `Image ${request.body.public_id} deleted`,
+        });
+    } catch (error) {
+        response.send({ status: false, message: error.message });
+    }
+});
+
+router.get("/all", authenticateToken, async (request, response) => {
+    try {
+        let images = await getAllImages();
+        response.send({ status: true, images: images.resources });
     } catch (error) {
         response.send({ status: false, message: error });
     }
@@ -73,8 +91,21 @@ router.post(
 
         const upload = async (req) => {
             try {
-                let result = await streamUpload(request);
-                response.send({ status: true, result: result });
+                let prevImages = await getAllImages();
+                await streamUpload(request);
+                //for testing loading handeling on frontend, achives same result as Thread.Sleep(ms) in Java
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                let images = await getAllImages();
+                //if api is being slow :( very hack solution i know!
+                while (prevImages.resources.length === images.resources.length) {
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    images = await getAllImages();
+                }
+                response.send({
+                    status: true,
+                    message: "Image uploaded",
+                    images: images.resources,
+                });
             } catch (error) {
                 response.send({ status: false, message: error.toString() });
             }
