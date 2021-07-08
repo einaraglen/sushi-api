@@ -78,11 +78,7 @@ router.post(
             return new Promise((resolve, reject) => {
                 let stream = cloudinary.uploader.upload_stream(
                     (error, result) => {
-                        if (result) {
-                            resolve(result);
-                        } else {
-                            reject(error);
-                        }
+                        !result ? reject(error) : resolve(result);
                     }
                 );
                 streamifier.createReadStream(request.file.buffer).pipe(stream);
