@@ -80,7 +80,7 @@ router.delete("/logout", async (request, response) => {
 });
 
 //auth test
-router.get("/validate", authenticateToken, (request, response) => {
+router.get("/validate", authenticateToken, async(request, response) => {
     try {
         response.send({ status: true, message: "Valid Token" });
     } catch (error) {
