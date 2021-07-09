@@ -26,6 +26,10 @@ const OrderSchema = mongoose.Schema({
         type: String,
         default: "No Comment Added"
     },
+    waitTime: {
+        type: Number,
+        required: true,
+    },
     created: {
         type: Date,
         default: () => { return new Date() },
