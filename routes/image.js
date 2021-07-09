@@ -76,7 +76,10 @@ router.post(
     (request, response, next) => {
         const streamUpload = (request) => {
             return new Promise((resolve, reject) => {
-                let stream = cloudinary.uploader.upload_stream(
+                let stream = cloudinary.uploader.upload_stream({
+                    //removes file type
+                    public_id: request.file.originalname.split(".")[0],
+                },
                     (error, result) => {
                         !result ? reject(error) : resolve(result);
                     }
