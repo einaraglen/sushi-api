@@ -29,7 +29,7 @@ cloudinary.config({
 
 const getAllImages = () => {
     return cloudinary.search
-            .expression("resource_type:image")
+            .expression("sushi:image")
             .sort_by("public_id", "desc")
             .execute()
             .then((result) => result);
